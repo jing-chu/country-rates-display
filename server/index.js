@@ -39,7 +39,6 @@ app.get('/', (req, res) => {
   const sqlSelect = "SELECT country_name FROM country_info;"
   db.query(sqlSelect, (err, result) => {
     res.send(result)
-    console.log(result)
   })
 })
 
@@ -55,7 +54,6 @@ app.get('/api/countries', (req, res) => {
         country.name === 'United Kingdom of Great Britain and Northern Ireland' ||
         country.name === 'United States of America'
       ))
-      console.log(countries)
 
       for (let i = 0; i < countries.length; i++) {
         const sqlInsert = 'INSERT INTO country_info (country_name, country_code, calling_code, capital, region) VALUES (?, ?, ?, ?, ?);'
@@ -103,17 +101,33 @@ app.post('/countries', (req, res) => {
   const sqlSelect = `SELECT * FROM country_info WHERE country_name='${country_name1}' OR country_name='${country_name2}';`
   db.query(sqlSelect, (err, result) => {
     res.send(result)
+    console.log(err)
   })
 })
 
 //Select data from mysql EURBASE_TABLE table
 app.post('/rates', (req, res) => {
-  const country_name1 = req.body.country_name1
-  const country_name2 = req.body.country_name2
+  let country_name1 = req.body.country_name1
+  let country_name2 = req.body.country_name2
+  const country_currency = {
+    'China': 'CNY',
+    'Brazil': 'BRL',
+    'Australia': 'AUD',
+    'United Kingdom of Great Britain and Northern Ireland': 'GBP',
+    'United States of America': 'USD'
+  }
+  for (const key in country_currency) {
+    if (country_name1 === key) {
+      country_name1 = country_currency[country_name1]
+    }
+    if (country_name2 === key) {
+      country_name2 = country_currency[country_name2]
+    }
+  }
   const sqlSelect = `SELECT date, ${country_name1}, ${country_name2} FROM eurbase_table;`
   db.query(sqlSelect, (err, result) => {
     res.send(result)
-    console.log(result)
+    console.log(err)
   })
 })
 
