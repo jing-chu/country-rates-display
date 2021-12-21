@@ -36,27 +36,35 @@ const getCountriesfromLayer = async () => {
 }
 
 app.get('/', (req, res) => {
-  res.send('Hello world')
+  const sqlSelect = "SELECT country_name FROM country_info;"
+  db.query(sqlSelect, (err, result) => {
+    res.send(result)
+    console.log(result)
+  })
 })
 
 //Save data to country_info table
 app.get('/api/countries', (req, res) => {
   const saveCountriesToDB = async () => {
-    const resp = await getCountriesfromLayer()
-    const countries = resp.data.filter(country => (
-      country.name === 'Australia' ||
-      country.name === 'Brazil' ||
-      country.name === 'China' ||
-      country.name === 'United Kingdom of Great Britain and Northern Ireland' ||
-      country.name === 'United States of America'
-    ))
-    console.log(countries)
+    try {
+      const resp = await getCountriesfromLayer()
+      const countries = resp.data.filter(country => (
+        country.name === 'Australia' ||
+        country.name === 'Brazil' ||
+        country.name === 'China' ||
+        country.name === 'United Kingdom of Great Britain and Northern Ireland' ||
+        country.name === 'United States of America'
+      ))
+      console.log(countries)
 
-    for (let i = 0; i < countries.length; i++) {
-      const sqlInsert = 'INSERT INTO country_info (country_name, country_code, calling_code, capital, region) VALUES (?, ?, ?, ?, ?);'
-      db.query(sqlInsert, [countries[i].name, countries[i].alpha3Code, countries[i].callingCodes[0], countries[i].capital, countries[i].region], (err, result) => {
-        console.log(err)
-      })
+      for (let i = 0; i < countries.length; i++) {
+        const sqlInsert = 'INSERT INTO country_info (country_name, country_code, calling_code, capital, region) VALUES (?, ?, ?, ?, ?);'
+        db.query(sqlInsert, [countries[i].name, countries[i].alpha3Code, countries[i].callingCodes[0], countries[i].capital, countries[i].region], (err, result) => {
+          console.log(err)
+        })
+      }
+    } catch (err) {
+      console.log(err)
     }
   }
   //saveCountriesToDB()
@@ -65,39 +73,47 @@ app.get('/api/countries', (req, res) => {
 //Save data to eurbase_table table
 app.get('/api/rates', (req, res) => {
   const saveRatesToDB = async () => {
-    let day = 1
-    for (day = 1; day <= 30; day++) {
-      let resp = []
-      if (day <= 9) {
-        resp = await getRatesfromFixer("0" + day)
-      } else {
-        resp = await getRatesfromFixer(day)
+    try {
+      let day = 1
+      for (day = 1; day <= 30; day++) {
+        let resp = []
+        if (day <= 9) {
+          resp = await getRatesfromFixer("0" + day)
+        } else {
+          resp = await getRatesfromFixer(day)
+        }
+        console.log(resp.data)
+        const result = resp.data
+        const sqlInsert = 'INSERT INTO eurbase_table (date, AUD, BRL, CNY, GBP, USD) VALUES (?, ?, ?, ?, ?, ?);'
+        db.query(sqlInsert, [result.date, result.rates.AUD, result.rates.BRL, result.rates.CNY, result.rates.GBP, result.rates.USD], (err, result) => {
+          console.log(err)
+        })
       }
-      console.log(resp.data)
-      const result = resp.data
-      const sqlInsert = 'INSERT INTO eurbase_table (date, AUD, BRL, CNY, GBP, USD) VALUES (?, ?, ?, ?, ?, ?);'
-      db.query(sqlInsert, [result.date, result.rates.AUD, result.rates.BRL, result.rates.CNY, result.rates.GBP, result.rates.USD], (err, result) => {
-        console.log(err)
-      })
+    } catch (err) {
+      console.log(err)
     }
   }
   //saveRatesToDB()
 })
 
 //Select data from mysql COUNTRY_INFO table
-app.get('/countries', (req, res) => {
-  const sqlSelect = 'SELECT * FROM country_info;'
+app.post('/countries', (req, res) => {
+  const country_name1 = req.body.country_name1
+  const country_name2 = req.body.country_name2
+  const sqlSelect = `SELECT * FROM country_info WHERE country_name='${country_name1}' OR country_name='${country_name2}';`
   db.query(sqlSelect, (err, result) => {
     res.send(result)
-    //console.log(result)
   })
 })
 
 //Select data from mysql EURBASE_TABLE table
-app.get('/rates', (req, res) => {
-  const sqlSelect = 'SELECT * FROM eurbase_table;'
+app.post('/rates', (req, res) => {
+  const country_name1 = req.body.country_name1
+  const country_name2 = req.body.country_name2
+  const sqlSelect = `SELECT date, ${country_name1}, ${country_name2} FROM eurbase_table;`
   db.query(sqlSelect, (err, result) => {
     res.send(result)
+    console.log(result)
   })
 })
 
