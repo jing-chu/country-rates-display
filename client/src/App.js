@@ -128,5 +128,8 @@ function App() {
 }
 
 //<Table data={rates} fieldsName={fieldsName} />
+// OR
+//<p>{filterCountry1} to {filterCountry2} in November 2021</p>
+//<Chart data={rates} /> 
 
 export default App;
