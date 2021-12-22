@@ -36,15 +36,19 @@ const getCountriesfromLayer = async () => {
 }
 
 app.get('/', (req, res) => {
-  const sqlSelect = "SELECT country_name FROM country_info;"
-  db.query(sqlSelect, (err, result) => {
-    res.send(result)
-  })
+  res.send()
 })
 
 //Save data to country_info table
 app.get('/api/countries', (req, res) => {
   const saveCountriesToDB = async () => {
+    const currency_code = {
+      'China': 'CNY',
+      'Brazil': 'BRL',
+      'Australia': 'AUD',
+      'United Kingdom of Great Britain and Northern Ireland': 'GBP',
+      'United States of America': 'USD'
+    }
     try {
       const resp = await getCountriesfromLayer()
       const countries = resp.data.filter(country => (
@@ -54,10 +58,9 @@ app.get('/api/countries', (req, res) => {
         country.name === 'United Kingdom of Great Britain and Northern Ireland' ||
         country.name === 'United States of America'
       ))
-
       for (let i = 0; i < countries.length; i++) {
-        const sqlInsert = 'INSERT INTO country_info (country_name, country_code, calling_code, capital, region) VALUES (?, ?, ?, ?, ?);'
-        db.query(sqlInsert, [countries[i].name, countries[i].alpha3Code, countries[i].callingCodes[0], countries[i].capital, countries[i].region], (err, result) => {
+        const sqlInsert = 'INSERT INTO country_info (country_name, country_code, calling_code, capital, region, currency_code) VALUES (?, ?, ?, ?, ?, ?);'
+        db.query(sqlInsert, [countries[i].name, countries[i].alpha3Code, countries[i].callingCodes[0], countries[i].capital, countries[i].region, currency_code[countries[i].name]], (err, result) => {
           console.log(err)
         })
       }
