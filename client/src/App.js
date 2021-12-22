@@ -36,7 +36,7 @@ function App() {
           currencyCode1: filterCountry1,
           currencyCode2: filterCountry2
         })
-        console.log(countriesResult.data)
+        //console.log(countriesResult.data)
         setCountries(countriesResult.data)
         const ratesResult = await axios.post('http://localhost:3001/rates', {
           currencyCode1: filterCountry1,
@@ -44,7 +44,7 @@ function App() {
         })
         const newRates = preprocessRates(ratesResult.data)
         setRates(newRates)
-        console.log(newRates)
+        //console.log(newRates)
       } catch (err) {
         console.log(err)
       }
