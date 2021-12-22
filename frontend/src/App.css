@@ -1,0 +1,96 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-align: center;
+}
+
+.select-form {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 1rem;
+  width: 40vw;
+  margin: auto;
+}
+
+hr {
+  border-top: 1px solid #ddd;
+  width: 95vw;
+  margin: 1rem;
+}
+/* Chart styling
+*/
+
+.container-results {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 95vw;
+}
+
+.country-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  width: 80%;
+  padding: 2rem;
+  margin: 2rem;
+}
+
+.table-container {
+  margin: 1rem;
+  margin: auto;
+}
+
+/*Table styling
+
+.container-results {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100vw;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  transition: 0.3s;
+  width: 80%;
+  padding: 2rem;
+  margin: 2rem;
+}
+
+.table-container {
+  margin: 1rem;
+}
+
+.table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+}
+
+.table td {
+  border: 1px solid #ddd;
+  padding: 1rem;
+}
+
+.table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.table tr:hover {
+  background-color: #ddd;
+}
+
+.table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  padding: 5px;
+}
+*/
