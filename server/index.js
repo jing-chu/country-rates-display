@@ -36,7 +36,11 @@ const getCountriesfromLayer = async () => {
 }
 
 app.get('/', (req, res) => {
-  res.send()
+  const sqlSelect = `SELECT currency_code FROM country_info;`
+  db.query(sqlSelect, (err, result) => {
+    res.send(result)
+    console.log(err)
+  })
 })
 
 //Save data to country_info table
@@ -99,9 +103,9 @@ app.get('/api/rates', (req, res) => {
 
 //Select data from mysql COUNTRY_INFO table
 app.post('/countries', (req, res) => {
-  const country_name1 = req.body.country_name1
-  const country_name2 = req.body.country_name2
-  const sqlSelect = `SELECT * FROM country_info WHERE country_name='${country_name1}' OR country_name='${country_name2}';`
+  const currencyCode1 = req.body.currencyCode1
+  const currencyCode2 = req.body.currencyCode2
+  const sqlSelect = `SELECT * FROM country_info WHERE currency_code='${currencyCode1}' OR currency_code='${currencyCode2}';`
   db.query(sqlSelect, (err, result) => {
     res.send(result)
     console.log(err)
@@ -110,24 +114,10 @@ app.post('/countries', (req, res) => {
 
 //Select data from mysql EURBASE_TABLE table
 app.post('/rates', (req, res) => {
-  let country_name1 = req.body.country_name1
-  let country_name2 = req.body.country_name2
-  const country_currency = {
-    'China': 'CNY',
-    'Brazil': 'BRL',
-    'Australia': 'AUD',
-    'United Kingdom of Great Britain and Northern Ireland': 'GBP',
-    'United States of America': 'USD'
-  }
-  for (const key in country_currency) {
-    if (country_name1 === key) {
-      country_name1 = country_currency[country_name1]
-    }
-    if (country_name2 === key) {
-      country_name2 = country_currency[country_name2]
-    }
-  }
-  const sqlSelect = `SELECT date, ${country_name1}, ${country_name2} FROM eurbase_table;`
+  let currencyCode1 = req.body.currencyCode1
+  let currencyCode2 = req.body.currencyCode2
+
+  const sqlSelect = `SELECT date, ${currencyCode1}, ${currencyCode2} FROM eurbase_table;`
   db.query(sqlSelect, (err, result) => {
     res.send(result)
     console.log(err)
